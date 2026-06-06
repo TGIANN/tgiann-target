@@ -1,0 +1,125 @@
+.target_menu_overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: auto;
+}
+
+/* Anchored near the screen centre (original ox options position) */
+.target_menu {
+  position: absolute;
+  top: 50%;
+  left: calc(50% + 4vh);
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 0.1vh;
+  width: 24vh;
+  max-height: 60vh;
+  overflow-y: auto;
+  padding: 0.5vh;
+  border-radius: 0.8vh;
+  border: 0.1vh solid color-mix(in srgb, var(--green) 35%, transparent);
+  background: linear-gradient(
+      180deg,
+      rgba(16, 22, 19, 0.72) 0%,
+      rgba(10, 14, 12, 0.72) 100%
+    );
+  box-shadow: 0 0.6vh 1.6vh rgba(0, 0, 0, 0.4);
+  color: #f7fffb;
+  font-family: "Inter Variable", sans-serif;
+}
+
+.target_menu_option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1vh;
+  padding: 0.55vh 0.9vh;
+  border-radius: 0.5vh;
+  cursor: pointer;
+  overflow: hidden;
+  transition: background 0.12s ease, transform 0.12s ease;
+}
+
+/* Sliding green accent on the left when hovered */
+.target_menu_option::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 0.3vh;
+  background: var(--green);
+  transform: scaleY(0);
+  transition: transform 0.14s ease;
+}
+
+.target_menu_option:hover {
+  background: var(--green-opacity-20);
+  transform: translateX(0.3vh);
+}
+
+.target_menu_option:hover::before {
+  transform: scaleY(1);
+}
+
+/* "Go back" row gets a divider beneath it */
+.target_menu_option_back {
+  margin-bottom: 0.3vh;
+  padding-bottom: 1vh;
+  border-bottom: 0.1vh solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.5vh 0.5vh 0 0;
+}
+
+.target_menu_icon_box {
+  flex-shrink: 0;
+  width: 2.6vh;
+  height: 2.6vh;
+  border-radius: 0.45vh;
+  background: rgba(255, 255, 255, 0.05);
+  border: 0.1vh solid rgba(255, 255, 255, 0.07);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5vh;
+  color: var(--green);
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.target_menu_option:hover .target_menu_icon_box {
+  background: var(--green);
+  color: var(--green-text);
+}
+
+.target_menu_label {
+  flex: 1;
+  font-size: 1.45vh;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.target_menu_arrow {
+  flex-shrink: 0;
+  font-size: 1.2vh;
+  color: rgba(255, 255, 255, 0.4);
+  transition: color 0.12s ease, transform 0.12s ease;
+}
+
+.target_menu_option:hover .target_menu_arrow {
+  color: var(--green);
+  transform: translateX(0.2vh);
+}
+
+/* Scrollbar */
+.target_menu::-webkit-scrollbar {
+  width: 0.5vh;
+}
+
+.target_menu::-webkit-scrollbar-thumb {
+  background: var(--green-opacity-20);
+  border-radius: 1vh;
+}

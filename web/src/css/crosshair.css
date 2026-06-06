@@ -1,0 +1,13 @@
+.target_crosshair {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 0.7vh;
+  height: 0.7vh;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  border: 0.15vh solid rgba(0, 0, 0, 0.55);
+  box-shadow: 0 0 0.5vh rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+}

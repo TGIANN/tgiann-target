@@ -1,0 +1,27 @@
+:root {
+  --green: #36ff9f;
+  --green-hover: color-mix(in srgb, var(--green) 80%, black);
+  --green-opacity-20: #36ff9f33;
+  --green-text: #04231a;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  user-select: none;
+  background: transparent;
+  font-family: "Inter Variable", sans-serif;
+}
+
+#root {
+  height: 100%;
+  width: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}

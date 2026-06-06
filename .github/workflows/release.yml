@@ -1,0 +1,45 @@
+name: Create release
+
+# Push a tag like v1.1.0 to publish a release. The version in fxmanifest is managed
+# manually, so this workflow does NOT touch it -- it just builds the UI and bundles
+# the runtime files into tgiann-target.zip.
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Build UI
+        working-directory: web
+        run: |
+          npm ci
+          npm run build
+
+      - name: Bundle files
+        run: |
+          mkdir -p ./temp/tgiann-target/web
+          cp fxmanifest.lua ./temp/tgiann-target/
+          [ -f LICENSE ] && cp LICENSE ./temp/tgiann-target/ || true
+          [ -f README.md ] && cp README.md ./temp/tgiann-target/ || true
+          cp -r client server locales ./temp/tgiann-target/
+          cp -r web/build ./temp/tgiann-target/web/build
+          cd ./temp && zip -r ../tgiann-target.zip ./tgiann-target
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: tgiann-target.zip
