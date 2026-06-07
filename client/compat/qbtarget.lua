@@ -94,8 +94,6 @@ local function convert(parameters)
     return options
 end
 
---#region Zones -----------------------------------------------------------------
-
 exportHandler('AddCircleZone', function(name, center, radius, options, targetoptions)
     return api.addSphereZone({
         name = name,
@@ -164,9 +162,6 @@ exportHandler('RemoveZone', function(id)
     api.removeZone(id, true)
 end)
 
---#endregion
---#region Entities, models & bones ----------------------------------------------
-
 exportHandler('AddTargetEntity', function(entities, parameters)
     if type(entities) ~= 'table' then entities = { entities } end
     local options = convert(parameters)
@@ -219,9 +214,6 @@ exportHandler('RemoveTargetBone', function(_, labels)
     api.removeGlobalVehicle(labels)
 end)
 
---#endregion
---#region Globals ---------------------------------------------------------------
-
 exportHandler('AddGlobalPed', function(parameters)
     api.addGlobalPed(convert(parameters))
 end)
@@ -266,9 +258,6 @@ exportHandler('RemoveGlobalTypeOptions', function(_type, labels)
         api.removeGlobalPlayer(labels)
     end
 end)
-
---#endregion
---#region Utility & ped spawning ------------------------------------------------
 
 exportHandler('AllowTargeting', function(allow)
     api.disableTargeting(not allow)
@@ -343,5 +332,3 @@ AddEventHandler('onResourceStop', function(resource)
         end
     end
 end)
-
---#endregion

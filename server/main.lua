@@ -1,6 +1,6 @@
 lib.versionCheck('TGIANN/tgiann-target')
 
-if not lib.checkDependency('ox_lib', '3.30.0', true) then return end
+if not lib.checkDependency('ox_lib', '3.37.1', true) then return end
 
 ---@type table<number, EntityInterface>
 local entityStates = {}

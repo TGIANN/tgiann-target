@@ -8,9 +8,13 @@ game 'gta5'
 -- Resource Information
 name 'tgiann-target'
 author 'TGIANN'
-version '1.0.0'
+version '1.1.0'
 repository 'https://github.com/TGIANN/tgiann-target'
 description ''
+
+escrow_ignore {
+    '**/**.*',
+}
 
 -- Manifest
 ui_page 'web/build/index.html'
@@ -48,6 +52,7 @@ files {
     'client/framework/qb.lua',
     'client/framework/qbx.lua',
     'client/compat/qbtarget.lua',
+    'client/compat/oxtarget.lua',
 }
 
 -- Drop-in replacement. Provides ox_target by default so exports.ox_target keeps working.

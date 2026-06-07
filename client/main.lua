@@ -1,4 +1,10 @@
-if not lib.checkDependency('ox_lib', '3.30.0', true) then return end
+if not lib.checkDependency('ox_lib', '3.37.1', true) then return end
+
+if not LoadResourceFile(cache.resource, 'web/build/index.html') or not LoadResourceFile(cache.resource, 'web/build/dui.html') then
+    local err = '^1Unable to load UI. Build tgiann-target or download the latest release.\n	^3https://github.com/TGIANN/tgiann-target/releases/latest/download/tgiann-target.zip^0'
+    return error(err)
+end
+
 
 lib.locale()
 
@@ -14,6 +20,7 @@ local options = api.getTargetOptions()
 require 'client.debug'
 require 'client.defaults'
 require 'client.compat.qbtarget'
+require 'client.compat.oxtarget'
 
 local GetEntityCoords = GetEntityCoords
 local GetEntityType = GetEntityType
