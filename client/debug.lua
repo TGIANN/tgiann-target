@@ -75,6 +75,25 @@ tgiannTarget:addPolyZone({
     }
 })
 
+local overlapCoords = vec3(430.0, -1025.0, 28.85637)
+
+for i = 1, 2 do
+    tgiannTarget:addSphereZone({
+        coords = overlapCoords,
+        radius = 1.5,
+        debug = drawZones,
+        drawSprite = true,
+        options = {
+            {
+                name = 'debug_overlap_' .. i,
+                event = 'tgiann-target:debug',
+                icon = 'fa-solid fa-layer-group',
+                label = 'Overlap ' .. string.char(64 + i), -- Overlap A / B
+            }
+        }
+    })
+end
+
 --#endregion
 --#region Models & globals ------------------------------------------------------
 

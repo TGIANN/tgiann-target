@@ -21,6 +21,9 @@ return {
     duiScale = convar.float('duiScale', 0.05),
     -- On-screen width (0..1) of the in-game ambient ring sprite.
     ringSize = convar.float('ringSize', 0.015),
+    -- Hide the centre targeting dot while free-aiming a weapon, so it doesn't clash with
+    -- the weapon reticle.
+    hideCrosshairWhileAiming = convar.bool('hideCrosshairWhileAiming', true),
     -- How often (ms) canInteract results may be re-evaluated.
     canInteractInterval = convar.int('canInteractInterval', checkInterval),
     -- Theme colours (match tgiann-core; synced live via tgiann-lumihud).

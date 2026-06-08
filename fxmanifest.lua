@@ -8,7 +8,7 @@ game 'gta5'
 -- Resource Information
 name 'tgiann-target'
 author 'TGIANN'
-version '1.1.0'
+version '1.2.0'
 repository 'https://github.com/TGIANN/tgiann-target'
 description ''
 

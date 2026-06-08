@@ -33,6 +33,7 @@ local IsControlPressed = IsControlPressed
 local GetGameTimer = GetGameTimer
 local NetworkGetEntityIsNetworked = NetworkGetEntityIsNetworked
 local NetworkGetNetworkIdFromEntity = NetworkGetNetworkIdFromEntity
+local IsPlayerFreeAiming = IsPlayerFreeAiming
 
 -- World/geometry helpers (see client/utils/world.lua).
 local getModelDims = world.getModelDims
@@ -45,6 +46,7 @@ local holdDuration = config.holdDuration
 local interactControl = config.interactControl
 local maxDistance = config.maxDistance
 local focusRadiusSq = config.focusRadius * config.focusRadius
+local hideCrosshairWhileAiming = config.hideCrosshairWhileAiming
 local debug = config.debug
 local themeColor = config.themeColor -- mutable; updated by the tgiann colour sync
 local themeTextColor = config.themeTextColor
@@ -229,7 +231,51 @@ end
 local function collectOptions(target)
     local list = {}
 
-    if target.zoneIndex then
+    if target.aim then
+        if target.entity and target.entity > 0 then
+            options:set(target.entity, target.entityType, target.entityModel or nil)
+
+            for typeKey, group in pairs(options) do
+                if typeKey ~= '__global' then
+                    for i = 1, #group do
+                        local option = group[i]
+
+                        if not shouldHide(option, target.dist, target.coords, target.entity, target.entityType, target.entityModel) then
+                            list[#list + 1] = {
+                                label = option.label,
+                                icon = option.icon or 'fa-solid fa-circle',
+                                arrow = option.openMenu and true or nil,
+                                iconColor = option.iconColor,
+                                typeKey = typeKey,
+                                optionIndex = i,
+                            }
+                        end
+                    end
+                end
+            end
+        end
+
+        for zi = 1, #nearbyZones do
+            local zone = nearbyZones[zi]
+
+            if zone.options and zone:contains(target.coords) then
+                for i = 1, #zone.options do
+                    local option = zone.options[i]
+
+                    if not shouldHide(option, target.dist, target.coords, target.entity or 0) then
+                        list[#list + 1] = {
+                            label = option.label,
+                            icon = option.icon or 'fa-solid fa-circle',
+                            arrow = option.openMenu and true or nil,
+                            iconColor = option.iconColor,
+                            zoneIndex = zi,
+                            optionIndex = i,
+                        }
+                    end
+                end
+            end
+        end
+    elseif target.zoneIndex then
         local zone = nearbyZones[target.zoneIndex]
 
         if zone then
@@ -440,6 +486,7 @@ local function rebuildLocations(playerCoords)
                             coords = zone.coords,
                             dist = zdist,
                             isZone = true,
+                            inAim = zone:contains(endCoords),
                             target = target,
                             options = opts,
                         }
@@ -657,6 +704,33 @@ local function handleInteract(loc)
             holdConsumed = true
             holdStart = nil
 
+            if loc.aimed or loc.inAim then
+                local aimTarget = {
+                    aim = true,
+                    entity = currentTarget.entity,
+                    entityType = currentTarget.entityType,
+                    entityModel = currentTarget.entityModel,
+                    coords = currentTarget.coords,
+                    dist = currentTarget.distance,
+                }
+                local opts = collectOptions(aimTarget)
+
+                if #opts > 1 then
+                    menuOpen = true
+                    menuTarget = aimTarget
+                    currentMenu = nil
+                    table.wipe(menuHistory)
+                    state.setNuiFocus(true, true)
+                    sendNui('clearTargets')
+                    sendNui('openMenu', { title = locale('interact'), options = opts })
+                    return
+                elseif #opts == 1 then
+                    runOption(opts[1])
+                    return
+                end
+            end
+
+            -- Otherwise it's a standalone proximity target (not under the crosshair).
             setContext(loc)
 
             if #loc.options > 1 then
@@ -760,14 +834,32 @@ local function render()
     local active = chosenIndex and locations[chosenIndex]
 
     if active and active.onScreen then
-        local single = #active.options == 1
+        local total = #active.options
+
+        if active.aimed or active.inAim then
+            for i = 1, #locations do
+                if i ~= chosenIndex then
+                    local loc = locations[i]
+                    if loc.aimed or loc.inAim then
+                        total = total + #loc.options
+                    end
+                end
+            end
+        end
+
         ebox.draw(active.sx, active.sy)
-        ebox.set(true, single and active.options[1].label or '', effectiveHolding)
+        ebox.set(true, total == 1 and active.options[1].label or '', effectiveHolding)
     else
         ebox.set(false)
     end
 
-    setCrosshair(anyOnScreen)
+    -- Hide the centre dot while free-aiming a weapon so it doesn't clash with the reticle.
+    local showCrosshair = anyOnScreen
+    if showCrosshair and hideCrosshairWhileAiming and IsPlayerFreeAiming(cache.playerId) then
+        showCrosshair = false
+    end
+
+    setCrosshair(showCrosshair)
 
     if chosenIndex then
         handleInteract(locations[chosenIndex])
